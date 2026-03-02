@@ -1,0 +1,43 @@
+# Entornos virtuales
+venv/
+env/
+.env
+.venv/
+
+# Archivos de Python
+__pycache__/
+*.py[cod]
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Bases de datos
+*.db
+*.sqlite3
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Archivos de entorno
+.env.local
+.env.development
+
+# Archivos de log
+*.log
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de cobertura de pruebas
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Archivos de Docker (excluimos los que se generan en tiempo de ejecución)
+*.pid
+*.seed
