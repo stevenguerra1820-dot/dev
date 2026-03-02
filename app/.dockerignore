@@ -1,0 +1,43 @@
+# Entornos virtuales
+venv/
+env/
+.venv/
+
+# Archivos de Python
+__pycache__/
+*.py[cod]
+*.pyc
+*.pyo
+*.pyd
+
+# Bases de datos locales
+*.db
+*.sqlite3
+
+# Archivos de entorno
+.env
+.env.local
+
+# Archivos de Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+
+# Archivos de Docker (evitar capas innecesarias)
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# Logs
+*.log
+
+# Archivos de prueba y cobertura
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Documentación temporal
+README.md

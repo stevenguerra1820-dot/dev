@@ -1,0 +1,20 @@
+# Añadir al final de docker-compose.yml
+  test:
+    build: .
+    container_name: academica_test
+    command: pytest --cov=app --cov-report=term tests/
+    volumes:
+      - .:/app
+      - test_coverage:/app/htmlcov
+    environment:
+      FLASK_ENV: testing
+      DATABASE_URL: sqlite:///:memory:
+    depends_on:
+      - web
+    networks:
+      - academica_network
+
+# Añadir volumen para reportes de cobertura
+volumes:
+  postgres_data:
+  test_coverage:

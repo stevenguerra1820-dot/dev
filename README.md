@@ -47,3 +47,16 @@ SECRET_KEY=tu-clave-secreta-aqui
 
 # Base de datos (SQLite para desarrollo)
 DATABASE_URL=sqlite:///academica.db
+
+## Ejecución con Docker
+
+### Requisitos Previos
+- Docker
+- Docker Compose
+
+### Pasos para ejecutar con Docker
+
+1. Clonar el repositorio:
+   ```bash
+   git clone <url-repositorio>
+   cd plataforma-gestion-academica

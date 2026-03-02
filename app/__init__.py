@@ -2,17 +2,17 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import os
 
-# Inicializar extensiones
 db = SQLAlchemy()
 
-def create_app():
-    """Factory function para crear la aplicación Flask"""
+def create_app(config_name=None):
     app = Flask(__name__)
     
-    # Configuración (igual que antes)
-    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'clave-secreta-desarrollo')
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///academica.db')
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    # Cargar configuración
+    if config_name is None:
+        config_name = os.getenv('FLASK_ENV', 'default')
+    
+    from config import config
+    app.config.from_object(config.get(config_name))
     
     # Inicializar extensiones
     db.init_app(app)
@@ -25,6 +25,7 @@ def create_app():
     with app.app_context():
         from app import models
         db.create_all()
-        print("✅ Base de datos inicializada")
+        print(f"✅ Base de datos inicializada en modo: {config_name}")
+        print(f"📊 URI: {app.config['SQLALCHEMY_DATABASE_URI']}")
     
     return app

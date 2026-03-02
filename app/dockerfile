@@ -1,0 +1,35 @@
+# Dockerfile
+# Usamos una imagen base de Python 3.11 slim (más liviana)
+FROM python:3.11-slim
+
+# Establecemos variables de entorno
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app
+
+# Establecemos el directorio de trabajo
+WORKDIR /app
+
+# Instalamos dependencias del sistema necesarias para psycopg2
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    libpq-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copiamos el archivo de requirements primero (para aprovechar cache de Docker)
+COPY requirements.txt .
+
+# Instalamos las dependencias de Python
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copiamos el resto del código
+COPY . .
+
+# Exponemos el puerto que usa Flask
+EXPOSE 5000
+
+# Comando para ejecutar la aplicación
+# Usamos gunicorn para producción (más robusto que flask run)
+RUN pip install gunicorn
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:create_app()"]
