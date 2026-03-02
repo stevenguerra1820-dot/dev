@@ -1,0 +1,57 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'  # Etiquetas que empiezan con v (v1.0.0, v2.1.3, etc.)
+
+jobs:
+  release:
+    name: 📦 Crear Release
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout código
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: 🔖 Obtener versión
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+      
+      - name: 🐳 Configurar Docker
+        uses: docker/setup-buildx-action@v2
+      
+      - name: 🔑 Login a DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      
+      - name: 🐳 Construir y subir imagen Docker
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/academica:${{ steps.get_version.outputs.VERSION }}
+            ${{ secrets.DOCKER_USERNAME }}/academica:latest
+      
+      - name: 📝 Generar notas de release
+        id: changelog
+        run: |
+          echo "## Cambios en esta versión" > release_notes.md
+          echo "" >> release_notes.md
+          git log $(git describe --tags --abbrev=0 HEAD^)..HEAD --pretty=format:"* %s" >> release_notes.md
+      
+      - name: 📦 Crear Release en GitHub
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release ${{ steps.get_version.outputs.VERSION }}
+          body_path: release_notes.md
+          draft: false
+          prerelease: false
+          files: |
+            requirements.txt
+            Dockerfile
